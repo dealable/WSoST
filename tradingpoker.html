@@ -1,0 +1,100 @@
+<head>
+  <title>tradingpoker</title>
+</head>
+
+<template name="home">
+  <div style="background-color: #333; position: fixed; top: 0; right: 0; bottom: 0; left: 0; ">
+    <div style='position: fixed; top: 0px; left: 0px; font-family: Helvetica Neue,sans-serif; width: 538px; height: 300px; position: relative; '>
+      <h1 style="color: #e66; font-size: 76px; margin: 0 0 0 10px; animation-name: fromLeft; animation-iteration-count: 1; animation-timing-function: ease-in; animation-duration: 1s;">World Series of Stock Trading</h1>
+      <!-- table -->
+      <div style="top: 0px; position: absolute; background-color: rgba(256,256,256,0.5); border-radius: 120px; margin: 10px; animation-name: appear; animation-iteration-count: 1; animation-timing-function: ease-in; animation-duration: 3s; ">
+        <img src="table.png" alt="table" style="width:500px; height: auto;">
+        <img src="Bar_stool_Icon_128.png" alt="stool" style="width:70px; height: auto; position: absolute; top: 190px; left: 0px;">
+        <div style="width:200px; height: 200px; border-radius: 100px; border: solid gold;position: absolute; top: 100px; left: -65px;background: url('illustration-394734_1920.jpg') -752px -437px; transform: scale(0.4);"> </div>
+
+        <img src="Bar_stool_Icon_128.png" alt="stool" style="width:70px; height: auto; position: absolute; top: 210px; left: 130px;">
+        <div style="width:200px; height: 200px; border-radius: 100px; border: solid gold;position: absolute; top: 110px; left: 65px; background: url('illustration-394734_1920.jpg') -526px -706px; transform: scale(0.4);"> </div>
+
+        <img src="Bar_stool_Icon_128.png" alt="stool" style="width:70px; height: auto; position: absolute; top: 210px; left: 260px;">
+        <div style="width:200px; height: 200px; border-radius: 100px; border: solid gold;position: absolute; top: 110px; left: 190px; background: url(illustration-394734_1920.jpg) -282px -427px; transform: scale(0.4);"> </div>
+
+        <img src="Bar_stool_Icon_128.png" alt="stool" style="width:70px; height: auto; position: absolute; top: 190px; left: 390px;">
+        <div style="width:200px; height: 200px; border-radius: 100px; border: solid gold;position: absolute; top: 100px; left: 325px; background: url(illustration-394734_1920.jpg) -1200px -704px; transform: scale(0.4);"> </div>
+
+        <div>
+          <img src="carddeck_red2.png" alt="table" style="width:70px; position: absolute; top: 50px; left: 145px;">
+          <div >
+            {{> Template.dynamic template=showCard}}
+          </div>
+        </div>
+      </div>
+
+      <!-- controls -->
+      {{> controls }}
+      </div>
+  </div>
+</template>
+
+<template name="card1">
+  {{> cardBack}}
+  <div style="position: absolute; top: 45px; left: 270px; background-color: #eee; width: 40px; height: 60px; border-radius: 10px; padding: 10px; font-size: 9px; text-align: center;color: #36e; border: double black;
+  animation-name: flipCardFront; animation-iteration-count: 1; animation-duration: 1s; ">
+    AAPL announces $1.20 earnings
+  </div>
+</template>
+<template name="card2">
+  {{> cardBack}}
+  <div style="position: absolute; top: 45px; left: 270px; background-color: #eee; width: 40px; height: 60px; border-radius: 10px; padding: 10px; font-size: 9px; text-align: center;color: #36e; border: double black;
+  animation-name: flipCardFront; animation-iteration-count: 1; animation-duration: 1s; ">
+    AAPL announces $1.20 net loss
+  </div>
+</template>
+<template name="card3">
+  {{> cardBack}}
+  <div style="position: absolute; top: 45px; left: 270px; background-color: #eee; width: 40px; height: 60px; border-radius: 10px; padding: 10px; font-size: 9px; text-align: center;color: #36e; border: double black;
+  animation-name: flipCardFront; animation-iteration-count: 1; animation-duration: 1s; ">
+    AAPL announces buyback of 3 shares
+  </div>
+</template>
+<template name="card4">
+  {{> cardBack}}
+  <div style="position: absolute; top: 45px; left: 270px; background-color: #eee; width: 40px; height: 60px; border-radius: 10px; padding: 10px; font-size: 9px; text-align: center;color: #36e; border: double black;
+  animation-name: flipCardFront; animation-iteration-count: 1; animation-duration: 1s; ">
+    AAPL announces issuance of 3 shares
+  </div>
+</template>
+<template name="cardBack">
+  <!-- http://lea.verou.me/css3patterns/#marrakesh
+  http://enjoycss.com/gallery/gradient_patterns-->
+  <div style="position: absolute; top: 45px; left: 270px; width: 40px; height: 60px; border-radius: 10px; padding: 10px; font-size: 9px; text-align: center;color: #36e; border: double black;
+  background-color:white; background-image: radial-gradient(#a11 1px, transparent 1px), repeating-radial-gradient(#a11 0, #a11 1px, transparent 1px, transparent 1px, #a11 10px, #a11 7px, transparent 9px, transparent 26px);
+  background-size: 5px 5px, 15px 15px;
+  animation-name: flipCardBack; animation-iteration-count: 1; animation-duration: 1s;
+  ">
+  </div>
+</template>
+
+<template name="controls">
+  <div style="background-color: rgba(0,0,0,0.7); color: white; width: 200px; height: 150px; border-radius: 10px; position: fixed; right: 0; bottom: 0; padding: 15px;
+  font-size: 10px;
+  animation-name: fromRight; animation-iteration-count: 1; animation-timing-function: ease-in; animation-duration: 3s;">
+
+    <div class="">
+      Buy 3 shares
+      <span style='text-align: right;'>
+        Sell 3 shares
+      </span>
+    </div>
+    <span style='margin-top: 10px; '>
+      <button type="button" name="button" style='width: 20px;'>+</button>
+      <button type="button" name="button" style='width: 20px;'>-</button>
+    </span>
+    <span>
+      <button type="button" name="button" style='width: 20px;'>+</button>
+      <button type="button" name="button" style='width: 20px;'>-</button>
+    </span>
+    <input type="rangeslide"/>
+    <button type="button" name="button" style='margin-top: 10px;'>Submit order</button>
+  </div>
+
+</template>
