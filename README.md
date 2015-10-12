@@ -6,8 +6,18 @@ Don't gamble on suits, bet on Fortune 500 companies!
 -> https://github.com/dealable/WSoST.git
 
 2. A demo video not to exceed 1:30 
--> 
+-> https://youtu.be/BLQ0CxlZs_U 
 
 3. A list of packages used to create the app
+*iron:router
+*fourseven:scss@2.0.0
+*meteortoys:allthings
 *elevatedevdesign:feedback
 *postrednik:meteor-rangeslider
+*aldeed:collection2
+*risul:chance
+*digilord:faker
+*ian:accounts-ui-bootstrap-3
+*twbs:bootstrap
+*accounts-password
+*useraccounts:ionic

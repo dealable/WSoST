@@ -1,0 +1,280 @@
+<head>
+  <title>tradingpoker</title>
+</head>
+
+<template name="phoneView">
+  <div style="background-color: #333; position: fixed; top: 0; right: 0; bottom: 0; left: 0; ">
+    <div style='position: fixed; top: 0px; left: 0px; font-family: Helvetica Neue,sans-serif; width: 538px; height: 300px; position: relative; '>
+    {{> yield}}
+    </div>
+  </div>
+</template>
+
+<template name="game">
+      <h1 style="color: #e66; font-size: 76px; margin: 0 0 0 10px; animation-name: fromLeft; animation-iteration-count: 1; animation-timing-function: ease-in; animation-duration: 1s;">World Series of Stock Trading</h1>
+      <!-- table -->
+      <div style="top: 0px; position: absolute; background-color: rgba(256,256,256,0.5); border-radius: 120px; margin: 10px; animation-name: appear; animation-iteration-count: 1; animation-timing-function: ease-in; animation-duration: 3s; ">
+        <img src="table.png" alt="table" style="width:500px; height: auto;">
+        <img id='seat1' src="Bar_stool_Icon_128.png" alt="stool" style="width:70px; height: auto; position: absolute; top: 190px; left: 0px;">
+        {{#if isOccupied 1}}
+          <div style="width:200px; height: 200px; border-radius: 100px; border: solid gold;position: absolute; top: 100px; left: -65px;background: url('illustration-394734_1920.jpg') -752px -437px; transform: scale(0.4);"> </div>
+          <div style="position: relative; top: -55px; text-align: center; width: 70px; display: flex; flex-direction: column; align-items: center;">
+            {{#if isCurrentTurn 1 }}
+              <span style='color: white; font-size: 10px; font-weight: 500;'>
+                Current Turn
+              </span>
+            {{/if}}
+            <span style='color: white; font-size: 10px; font-weight: 500; width: 30px; height: 30px; border-radius: 15px; background-color: rgba(0,0,0,0.5);'>
+              {{ seatPlayer 1 }}
+            </span>
+            {{#if isThisPlayer 1 }}
+              <button id="leave1">Leave</button>
+            {{/if}}
+          </div>
+        {{/if}}
+
+        <img id='seat2' src="Bar_stool_Icon_128.png" alt="stool" style="width:70px; height: auto; position: absolute; top: 210px; left: 130px;">
+        {{#if isOccupied 2}}
+
+          <div style="width:200px; height: 200px; border-radius: 100px; border: solid gold;position: absolute; top: 110px; left: 65px; background: url('illustration-394734_1920.jpg') -526px -706px; transform: scale(0.4);"> </div>
+          <div style="position: absolute; top: 220px; left: 130px;  text-align: center; width: 70px; display: flex; flex-direction: column; align-items: center;">
+            {{#if isCurrentTurn 2 }}
+              <span style='color: white; font-size: 10px; font-weight: 500;'>
+                Current Turn
+              </span>
+            {{/if}}
+            <span style='color: white; font-size: 10px; font-weight: 500; width: 30px; height: 30px; border-radius: 15px; background-color: rgba(0,0,0,0.5);'>
+              {{ seatPlayer 2 }}
+            </span>
+            {{#if isThisPlayer 2 }}
+              <button id="leave2">Leave</button>
+            {{/if}}
+          </div>
+        {{/if}}
+
+        <img id='seat3' src="Bar_stool_Icon_128.png" alt="stool" style="width:70px; height: auto; position: absolute; top: 210px; left: 260px;">
+        {{#if isOccupied 3}}
+          <div style="width:200px; height: 200px; border-radius: 100px; border: solid gold;position: absolute; top: 110px; left: 190px; background: url(illustration-394734_1920.jpg) -282px -427px; transform: scale(0.4);"> </div>
+          <div style="position: absolute; top: 220px; left: 255px; text-align: center; width: 70px; display: flex; flex-direction: column; align-items: center;">
+            {{#if isCurrentTurn 3 }}
+              <span style='color: white; font-size: 10px; font-weight: 500;'>
+                Current Turn
+              </span>
+            {{/if}}
+            <span style='color: white; font-size: 10px; font-weight: 500; width: 30px; height: 30px; border-radius: 15px; background-color: rgba(0,0,0,0.5);'>
+              {{ seatPlayer 3 }}
+            </span>
+            {{#if isThisPlayer 3 }}
+              <button id="leave3">Leave</button>
+            {{/if}}
+          </div>
+        {{/if}}
+
+        <img id='seat4' src="Bar_stool_Icon_128.png" alt="stool" style="width:70px; height: auto; position: absolute; top: 190px; left: 390px;">
+        {{#if isOccupied 4}}
+          <div style="width:200px; height: 200px; border-radius: 100px; border: solid gold;position: absolute; top: 100px; left: 325px; background: url(illustration-394734_1920.jpg) -1200px -704px; transform: scale(0.4);"> </div>
+          <div style="position: absolute; top: 210px; left: 391px; text-align: center; width: 70px; display: flex; flex-direction: column; align-items: center;">
+            {{#if isCurrentTurn 4 }}
+              <span style='color: white; font-size: 10px; font-weight: 500;'>
+                Current Turn
+              </span>
+            {{/if}}
+            <span style='color: white; font-size: 10px; font-weight: 500; width: 30px; height: 30px; border-radius: 15px; background-color: rgba(0,0,0,0.5);x'>
+              {{ seatPlayer 4 }}
+            </span>
+            {{#if isThisPlayer 4 }}
+              <button id="leave4">Leave</button>
+            {{/if}}
+          </div>
+        {{/if}}
+
+        <div>
+          <img src="carddeck_red2.png" alt="table" style="width:100px; position: absolute; top: 50px; left: 145px;">
+          <div >
+            {{> Template.dynamic template=showCard}}
+          </div>
+        </div>
+      </div>
+
+      {{> balances }}
+      {{#if isPlayer}}
+        {{#if gameOn}}
+          {{> orderBook }}
+          {{> controls }}
+        {{ else }}
+          {{> playersSeated}}
+        {{/if}}
+      {{else}}
+        {{> pickSeat}}
+      {{/if}}
+</template>
+
+<template name="card1">
+  {{> cardBack}}
+  <div style="position: absolute; top: 45px; left: 270px; background-color: #eee; width: 60px; height: 80px; border-radius: 10px;padding: 10px; font-size: 9px; text-align: center;color: #36e; border: double black;
+  animation-name: flipCardFront; animation-iteration-count: 1; animation-duration: 1s; ">
+    AAPL announces $1.20 earnings
+  </div>
+</template>
+<template name="card2">
+  {{> cardBack}}
+  <div style="position: absolute; top: 45px; left: 270px; background-color: #eee; width: 60px; height: 80px; border-radius: 10px;padding: 10px; font-size: 9px; text-align: center;color: #36e; border: double black;
+  animation-name: flipCardFront; animation-iteration-count: 1; animation-duration: 1s; ">
+    AAPL announces $1.20 net loss
+  </div>
+</template>
+<template name="card3">
+  {{> cardBack}}
+  <div style="position: absolute; top: 45px; left: 270px; background-color: #eee; width: 60px; height: 80px; border-radius: 10px;padding: 10px; font-size: 9px; text-align: center;color: #36e; border: double black;
+  animation-name: flipCardFront; animation-iteration-count: 1; animation-duration: 1s; ">
+    AAPL announces buyback of 3 shares
+  </div>
+</template>
+<template name="card4">
+  {{> cardBack}}
+  <div style="position: absolute; top: 45px; left: 270px; background-color: #eee; width: 60px; height: 80px; border-radius: 10px;padding: 10px; font-size: 9px; text-align: center;color: #36e; border: double black;
+  animation-name: flipCardFront; animation-iteration-count: 1; animation-duration: 1s; ">
+    AAPL announces issuance of 3 shares
+  </div>
+</template>
+<template name="cardBack">
+  <!-- http://lea.verou.me/css3patterns/#marrakesh
+  http://enjoycss.com/gallery/gradient_patterns-->
+  <div style="position: absolute; top: 45px; left: 270px; width: 60px; height: 80px; border-radius: 10px;padding: 10px; font-size: 9px; text-align: center;color: #36e; border: double black;
+  background-color:white; background-image: radial-gradient(#a11 1px, transparent 1px), repeating-radial-gradient(#a11 0, #a11 1px, transparent 1px, transparent 1px, #a11 10px, #a11 7px, transparent 9px, transparent 26px);
+  background-size: 5px 5px, 15px 15px;
+  animation-name: flipCardBack; animation-iteration-count: 1; animation-duration: 1s;
+  ">
+  </div>
+</template>
+
+<template name="playersSeated">
+  <div style="background-color: rgba(0,0,0,0.7); color: white; width: 170px; height: 110px; border-radius: 10px; position: fixed; top: 60px; bottom: 0; padding: 10px;
+  font-size: 10px; display: flex; flex-flow: row wrap;
+  animation-name: fromLeft; animation-iteration-count: 1; animation-timing-function: ease-in; animation-duration: 3s;">
+    <span style= 'width: 100%; font-weight: bold; font-size: 12px;'>
+      <table style='border: 1px solid grey; width: 100%'>
+        <tr style='border: 1px solid grey; width: 100%; margin: 0 5px;'>
+          <td> Player </td>
+          <td> Seat </td>
+        </tr>
+        {{#each playersSeated }}
+          <tr>
+            <td> {{ userName }} </td>
+            <td> {{ seatNum }} </td>
+          </tr>
+        {{/each }}
+      </table>
+    </span>
+  </div>
+
+  <!-- left panel -->
+  <div style="background-color: rgba(0,0,0,0.7); color: white; width: 100px; height: 50px; border-radius: 10px; position: fixed; left: 0; bottom: 0;
+  font-size: 10px; display:flex; justify-content: center; align-items: center;
+  animation-name: fromLeft; animation-iteration-count: 1; animation-timing-function: ease-in; animation-duration: 3s;">
+    <button id='startGame' type="button" name="button" style='height: 40px; border-radius: 10px; color: green; font-weight: bold; background-color: white;'>Start game</button>
+  </div>
+</template>
+
+<template name="orderBook">
+  <div style="background-color: rgba(0,0,0,0.7); color: white; width: 170px; height: 110px; border-radius: 10px; position: fixed; top: 60px; bottom: 0; padding: 10px;
+  font-size: 10px; display: flex; flex-flow: row wrap;
+  animation-name: fromLeft; animation-iteration-count: 1; animation-timing-function: ease-in; animation-duration: 3s;">
+    <span style= 'width: 100%; font-weight: bold; font-size: 12px;'>
+      Order Book
+    </span>
+    <span style='display: flex; justify-content: space-between;'>
+      <span style='width: 100px;'>
+        Buy
+        <ul style='list-style-type: none; padding: 0;'>
+          <li>$98 x 3</li>
+          <li>$96 x 5</li>
+          <li>$94 x 8</li>
+        </ul>
+      </span>
+      <span style='width: 100px;'>
+        Sell
+        <ul style='list-style-type: none; padding: 0;'>
+          <li>$98 x 3</li>
+          <li>$102 x 3</li>
+          <li>$104 x 5</li>
+          <li>$106 x 8</li>
+        </ul>
+      </span>
+    </span>
+  </div>
+</template>
+
+<template name="pickSeat">
+  <div style="background-color: rgba(0,0,0,0.7); color: white; width: 200px; height: 50px; border-radius: 10px; position: fixed; right: 0; top: 50px; padding: 10px;
+  font-size: 20px;
+  animation-name: fromRight; animation-iteration-count: 1; animation-timing-function: ease-in; animation-duration: 3s;">
+    Pick a seat to begin
+</div>
+</template>
+
+<template name="controls">
+  <!-- right panel -->
+  <div style="background-color: rgba(0,0,0,0.7); color: white; width: 200px; height: 150px; border-radius: 10px; position: fixed; right: 0; bottom: 0; padding: 10px;
+  font-size: 9px;
+  animation-name: fromRight; animation-iteration-count: 1; animation-timing-function: ease-in; animation-duration: 3s;">
+
+    <div style="height: 65px; display: flex; flex-flow: row wrap; justify-content: center;">
+      <span style='height: 20px;'>
+        <button type="button" name="button" style='width: 25px; height: 25px; margin: 5px; color: green; font-weight: bold;'>+</button>
+        <span style='width: 200px;'>
+          Buy 3 shares
+        </span>
+        <button type="button" name="button" style='width: 25px; height: 25px; margin: 5px; color: red; font-weight: bold;'>-</button>
+      </span>
+      <span style='height: 20px;'>
+        <button type="button" name="button" style='width: 25px; height: 25px; margin: 5px; color: green; font-weight: bold;'>+</button>
+        <span style='width: 200px;'>
+            Sell 3 shares
+        </span>
+        <button type="button" name="button" style='width: 25px; height: 25px; margin: 5px; color: red; font-weight: bold;'>-</button>
+      </span>
+    </div>
+    <input type="rangeslide"/>
+  </div>
+
+  <!-- left panel -->
+  <div style="background-color: rgba(0,0,0,0.7); color: white; width: 100px; height: 50px; border-radius: 10px; position: fixed; left: 0; bottom: 0;
+  font-size: 10px; display:flex; justify-content: center; align-items: center;
+  animation-name: fromLeft; animation-iteration-count: 1; animation-timing-function: ease-in; animation-duration: 3s;">
+    <button type="button" name="button" style='height: 40px; border-radius: 10px; color: green; font-weight: bold; background-color: white;'>Submit order</button>
+  </div>
+</template>
+
+<!-- top panel -->
+<template name="balances">
+  <div style="background-color: rgba(0,0,0,0.7); color: white; width: 100%; height: 40px; border-radius: 0px; position: fixed; left: 0; top: 0; padding: 5px;
+  font-size: 10px; line-height: 1.8; display: flex; justify-content: space-between;
+  animation-name: fromTop; animation-iteration-count: 1; animation-timing-function: ease-in; animation-duration: 1s;">
+
+  <span style="margin-left: 10px; display: flex; flex-flow: row wrap; ">
+    <span style='width: 100px;'> Account Snapshot </span>
+    <span style='width: 100px;'> Player fastrock </span>
+  </span>
+  <span style='margin-left: 20px; display: flex; flex-flow: row wrap; justify-content: center;'>
+    <span style='width: 200px; display: flex; justify-content: space-around;'>
+      <span style=' width: 100px; background-color: rbga(256,256,0,0.5);'> Cash: $10000 </span>
+      <span style=' width: 100px; background-color: rbga(256,256,0,0.5);'> # of stock: 100 </span>
+    </span>
+    <span style='text-align: center; font-size: 10px; width: 100px; display: flex; justify-content: space-around;'>
+      <span style='color: white;'>APPL</span>
+      <span style='color: orange;'>$98</span>
+      <span style='color: #77D; font-size: 10px; font-weight: bold;'>/</span>
+      <span style='color: orange;'>$102</span>
+    </span>
+  </span>
+
+  <span style="margin-right: 10px; line-height: 1.8;  display: flex; flex-flow: row wrap; ">
+    <div> Total value: $12541 </div>
+    <div> Relative gain: 0% </div>
+  </span>
+
+  <button id='startGame' type="button" name="button" style=' border-radius: 10px; color: red; font-weight: bold; background-color: white;'>Quit</button>
+  </div>
+
+</template>
