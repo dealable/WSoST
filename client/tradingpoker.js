@@ -1,4 +1,7 @@
+
 if (Meteor.isClient) {
+  // Feedback = {};
+  // Feedback.provide = function() { return };
 
   Feedback.profiles = {
     "gameMusic": {
@@ -7,28 +10,24 @@ if (Meteor.isClient) {
     },
     "click": {
       sound: "201809__fartheststar__poker-chips5.wav",
-      vibrate: [500,50,500,50,100]
+      vibrate: [50]
     }
   }
 
-  Meteor.startup(function(){
-  });
-
-  // counter starts at 0
-  Session.setDefault('card', 'cardBack');
-
   Template.game.helpers({
-    counter: function () {
-      return Session.get('counter');
-    },
     showCard: function() {
-      return Session.get('card');
+      let tabledoc = Table.findOne({stock: 'AAPL'});
+      console.log('client card', tabledoc)
+      if (tabledoc) {
+        return tabledoc.card;
+      } else {
+        return 'cardBack';
+      }
     },
     isPlayer: utils.isPlayer,
     isOccupied: utils.isOccupied,
     seatPlayer: function(seatNum) {
       let res = utils.getSeatPlayer(seatNum).userName;
-      console.log('seatPlayer' + res);
       return res;
     },
     isThisPlayer: function(seatNum) {
@@ -39,13 +38,7 @@ if (Meteor.isClient) {
       let turns = utils.getTurns()
       return !!turns.current
     },
-    isCurrentTurn(seatNum) {
-      let turns = utils.getTurns();
-      let res = (!_.isUndefined(turns.current)) && (seatNum === turns.current.seatNum);
-      console.log('isCurrentTurn turns', turns);
-      console.log('isCurrentTurn', res);
-      return res;
-    }
+    isCurrentTurn: utils.isCurrentTurn
 
   });
   let cb = function(err, res) {
@@ -59,15 +52,21 @@ if (Meteor.isClient) {
     }
   }
   Template.game.events({
-    'click #seat1': function() {Meteor.call('playerSit', 1,cb)},
-    'click #seat2': function() {Meteor.call('playerSit', 2,cb)},
-    'click #seat3': function() {Meteor.call('playerSit', 3,cb)},
-    'click #seat4': function() {Meteor.call('playerSit', 4,cb)},
-    'click #leave1': function() {Meteor.call('playerLeave', 1,cb)},
-    'click #leave2': function() {Meteor.call('playerLeave', 2,cb)},
-    'click #leave3': function() {Meteor.call('playerLeave', 3,cb)},
-    'click #leave4': function() {Meteor.call('playerLeave', 4,cb)},
-    'click #startGame': function() {Meteor.call('startTurn', cb)}
+    'click #seat1': function() {utils.playerSit(1,cb)},
+    'click #seat2': function() {utils.playerSit(2,cb)},
+    'click #seat3': function() {utils.playerSit(3,cb)},
+    'click #seat4': function() {utils.playerSit(4,cb)},
+    'click #leave1': function() {utils.playerLeave(1,cb)},
+    'click #leave2': function() {utils.playerLeave(2,cb)},
+    'click #leave3': function() {utils.playerLeave(3,cb)},
+    'click #leave4': function() {utils.playerLeave(4,cb)},
+    'click #startGame': function() {utils.startTurn(cb)},
+    'click #buyUp': function() {utils.modifyQuantity(Meteor.userId(), 'buy', 'up', cb)},
+    'click #buyDown': function() {utils.modifyQuantity(Meteor.userId(), 'buy', 'down', cb)},
+    'click #sellUp': function() {utils.modifyQuantity(Meteor.userId(),  'sell', 'up', cb)},
+    'click #sellDown': function() {utils.modifyQuantity(Meteor.userId(),  'sell', 'down', cb)},
+    'click #submitOrder': function() {utils.submitOrder(Meteor.userId(),  'sell', 'down', cb)},
+    'click #quitGame': function() {Meteor.logout()}
   });
 
   Template.game.rendered = function () {
@@ -75,27 +74,50 @@ if (Meteor.isClient) {
   };
 
   Template.controls.rendered = function () {
-    $('input[type="rangeslide"]').ionRangeSlider(
-      {
-        type: "double",
-        grid: true,
-        min: 0,
-        max: 1000,
-        from: 100,
-        to: 1000,
-        step: 100
+    let orders = utils.getOrders();
+    let mid = utils.currentMid(orders);
+    this.$("#slider").noUiSlider({
+      start: [mid*0.9, mid*1.1],
+      step: 2,
+    	connect: true,
+      behaviour: 'tap-drag',
+    	range: {
+    		'min': mid/2,
+    		'max': mid*2,
+    	},
+      pips: { // Show a scale with the slider
+        mode: 'steps',
+        density: 2
       }
-    )
+    }).on('slide', function (ev, val) {
+      // set real values on 'slide' event
+      Session.set('slider', val);
+      let currPlayer = Seats.find({userId: Meteor.userId()}).fetch();
+      [buyPrice, sellPrice] = val;
+      let res = Seats.update(currPlayer[0]._id, {$set: {buyPrice: buyPrice, sellPrice: sellPrice}});
+    });
   };
 
   Template.controls.helpers({
     buyQuantity: function() {
-      return Seats.findOne({userId: Meter.userId}).buyQuantity
+      return Seats.findOne({userId: Meteor.userId()}).buyQuantity;
     },
     sellQuantity: function() {
-      let sellQ = Seats.findOne({userId: Meter.userId}).sellQuantity;
-      console.log('sellQ', sellQ);
-      return sellQ;
+      return Seats.findOne({userId: Meteor.userId()}).sellQuantity;
+    },
+    buyPrice: function() {
+      return Seats.findOne({userId: Meteor.userId()}).buyPrice;
+    },
+    sellPrice: function() {
+      return Seats.findOne({userId: Meteor.userId()}).sellPrice;
+    },
+    isUserTurn: utils.isUserTurn,
+    currentPlayer: function() {
+      let turns = utils.getTurns();
+      if(turns.current) {
+        let currentSeat = Seats.findOne({seatNum: turns.current.seatNum});
+        return currentSeat.userName;
+      }
     }
   });
   Template.playersSeated .helpers({
@@ -103,11 +125,51 @@ if (Meteor.isClient) {
       return Seats.find({userId: {$ne: null}}).fetch()
     }
   });
+
+  Template.orderBook.helpers({
+    buyOrders: utils.getBuyOrders,
+    sellOrders: utils.getSellOrders
+  });
+  Template.balances.helpers({
+    bid: function() {
+      let orders = utils.getBuyOrders();
+      if (orders.length !== 0) {
+        return Math.round(orders[0].orders.buy.price);
+      } else {
+        return 'xx'
+      }
+    },
+    offer:  function() {
+      let orders = utils.getSellOrders();
+      if (orders.length !== 0) {
+        return Math.round(orders[0].orders.sell.price);
+      } else {
+        return 'xx'
+      }
+    },
+    seatData: utils.seatData,
+    gain: function() {
+      let doc = Seats.findOne({userId: Meteor.userId()});
+      if(doc) {
+        return Math.round(doc.cash / doc.cash * 100 - 100);
+      } else {
+        return 'xx'
+      }
+    },
+    nav: function() {
+      let doc = Seats.findOne({userId: Meteor.userId()});
+      let orders = utils.getOrders();
+      let mid = utils.currentMid(orders);
+      if(doc) {
+        return Math.round(doc.cash + doc.stockOwned * mid);
+      } else {
+        return 'xx'
+      }
+    }
+  });
   // Template.registerHelper('cardPattern', function)
 }
 
-if (Meteor.isServer) {
-  Meteor.startup(function () {
-    // code to run on server at startup
-  });
-}
+Meteor.startup(function () {
+  utils.flipCard(true);
+});

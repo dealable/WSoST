@@ -12,7 +12,6 @@
 
 <template name="game">
       <h1 style="color: #e66; font-size: 76px; margin: 0 0 0 10px; animation-name: fromLeft; animation-iteration-count: 1; animation-timing-function: ease-in; animation-duration: 1s;">World Series of Stock Trading</h1>
-      <!-- table -->
       <div style="top: 0px; position: absolute; background-color: rgba(256,256,256,0.5); border-radius: 120px; margin: 10px; animation-name: appear; animation-iteration-count: 1; animation-timing-function: ease-in; animation-duration: 3s; ">
         <img src="table.png" alt="table" style="width:500px; height: auto;">
         <img id='seat1' src="Bar_stool_Icon_128.png" alt="stool" style="width:70px; height: auto; position: absolute; top: 190px; left: 0px;">
@@ -20,7 +19,7 @@
           <div style="width:200px; height: 200px; border-radius: 100px; border: solid gold;position: absolute; top: 100px; left: -65px;background: url('illustration-394734_1920.jpg') -752px -437px; transform: scale(0.4);"> </div>
           <div style="position: relative; top: -55px; text-align: center; width: 70px; display: flex; flex-direction: column; align-items: center;">
             {{#if isCurrentTurn 1 }}
-              <span style='color: white; font-size: 10px; font-weight: 500;'>
+              <span style='height: 30px; width: 30px; border-radius: 15px; padding-top:5px; color: black; background-color: yellow; border: green solid; font-size: 6px; font-weight: 500;'>
                 Current Turn
               </span>
             {{/if}}
@@ -39,7 +38,7 @@
           <div style="width:200px; height: 200px; border-radius: 100px; border: solid gold;position: absolute; top: 110px; left: 65px; background: url('illustration-394734_1920.jpg') -526px -706px; transform: scale(0.4);"> </div>
           <div style="position: absolute; top: 220px; left: 130px;  text-align: center; width: 70px; display: flex; flex-direction: column; align-items: center;">
             {{#if isCurrentTurn 2 }}
-              <span style='color: white; font-size: 10px; font-weight: 500;'>
+              <span style='height: 30px; width: 30px; border-radius: 15px; padding-top:5px; color: black; background-color: yellow; border: green solid; font-size: 6px; font-weight: 500;'>
                 Current Turn
               </span>
             {{/if}}
@@ -57,13 +56,14 @@
           <div style="width:200px; height: 200px; border-radius: 100px; border: solid gold;position: absolute; top: 110px; left: 190px; background: url(illustration-394734_1920.jpg) -282px -427px; transform: scale(0.4);"> </div>
           <div style="position: absolute; top: 220px; left: 255px; text-align: center; width: 70px; display: flex; flex-direction: column; align-items: center;">
             {{#if isCurrentTurn 3 }}
-              <span style='color: white; font-size: 10px; font-weight: 500;'>
+              <span style='height: 30px; width: 30px; border-radius: 15px; padding-top:5px; color: black; background-color: yellow; border: green solid; font-size: 6px; font-weight: 500;'>
                 Current Turn
               </span>
+            {{else}}
+              <span style='color: white; font-size: 10px; font-weight: 500; width: 30px; height: 30px; border-radius: 15px; background-color: rgba(0,0,0,0.5);'>
+                {{ seatPlayer 3 }}
+              </span>
             {{/if}}
-            <span style='color: white; font-size: 10px; font-weight: 500; width: 30px; height: 30px; border-radius: 15px; background-color: rgba(0,0,0,0.5);'>
-              {{ seatPlayer 3 }}
-            </span>
             {{#if isThisPlayer 3 }}
               <button id="leave3">Leave</button>
             {{/if}}
@@ -75,7 +75,7 @@
           <div style="width:200px; height: 200px; border-radius: 100px; border: solid gold;position: absolute; top: 100px; left: 325px; background: url(illustration-394734_1920.jpg) -1200px -704px; transform: scale(0.4);"> </div>
           <div style="position: absolute; top: 210px; left: 391px; text-align: center; width: 70px; display: flex; flex-direction: column; align-items: center;">
             {{#if isCurrentTurn 4 }}
-              <span style='color: white; font-size: 10px; font-weight: 500;'>
+              <span style='height: 30px; width: 30px; border-radius: 15px; padding-top:5px; color: black; background-color: yellow; border: green solid; font-size: 6px; font-weight: 500;'>
                 Current Turn
               </span>
             {{/if}}
@@ -187,18 +187,17 @@
       <span style='width: 100px;'>
         Buy
         <ul style='list-style-type: none; padding: 0;'>
-          <li>$98 x 3</li>
-          <li>$96 x 5</li>
-          <li>$94 x 8</li>
+          {{#each buyOrders}}
+            <li>${{orders.buy.price}} x {{orders.buy.quantity}}</li>
+          {{/each}}
         </ul>
       </span>
       <span style='width: 100px;'>
         Sell
         <ul style='list-style-type: none; padding: 0;'>
-          <li>$98 x 3</li>
-          <li>$102 x 3</li>
-          <li>$104 x 5</li>
-          <li>$106 x 8</li>
+          {{#each sellOrders}}
+            <li>${{orders.sell.price}} x {{orders.sell.quantity}}</li>
+          {{/each}}
         </ul>
       </span>
     </span>
@@ -215,34 +214,38 @@
 
 <template name="controls">
   <!-- right panel -->
-  <div style="background-color: rgba(0,0,0,0.7); color: white; width: 200px; height: 150px; border-radius: 10px; position: fixed; right: 0; bottom: 0; padding: 10px;
-  font-size: 9px;
+  <div style="background-color: rgba(0,0,0,0.7); color: white; width: 200px; height: 130px; border-radius: 10px; position: fixed; right: 0; bottom: 0; padding: 10px;
+  font-size: 9px;display: flex; flex-flow: row wrap; justify-content: center;
   animation-name: fromRight; animation-iteration-count: 1; animation-timing-function: ease-in; animation-duration: 3s;">
 
-    <div style="height: 65px; display: flex; flex-flow: row wrap; justify-content: center;">
       <span style='height: 20px;'>
-        <button type="button" name="button" style='width: 25px; height: 25px; margin: 5px; color: green; font-weight: bold;'>+</button>
+        <button id='buyUp' type="button" name="button" style='width: 25px; height: 25px; margin: 5px; color: green; font-weight: bold;'>+</button>
         <span style='width: 200px;'>
-          Buy 3 shares
+          Buy {{buyQuantity}} shares at {{buyPrice}}
         </span>
-        <button type="button" name="button" style='width: 25px; height: 25px; margin: 5px; color: red; font-weight: bold;'>-</button>
+        <button id='buyDown' type="button" name="button" style='width: 25px; height: 25px; margin: 5px; color: red; font-weight: bold;'>-</button>
       </span>
       <span style='height: 20px;'>
-        <button type="button" name="button" style='width: 25px; height: 25px; margin: 5px; color: green; font-weight: bold;'>+</button>
+        <button id='sellUp' type="button" name="button" style='width: 25px; height: 25px; margin: 5px; color: green; font-weight: bold;'>+</button>
         <span style='width: 200px;'>
-            Sell 3 shares
+            Sell {{sellQuantity}} shares at {{sellPrice}}
         </span>
-        <button type="button" name="button" style='width: 25px; height: 25px; margin: 5px; color: red; font-weight: bold;'>-</button>
+        <button id='sellDown' type="button" name="button" style='width: 25px; height: 25px; margin: 5px; color: red; font-weight: bold;'>-</button>
       </span>
-    </div>
-    <input type="rangeslide"/>
+      <div id="slider" style='width: 150px; margin-top: 20px;'></div>
   </div>
 
   <!-- left panel -->
   <div style="background-color: rgba(0,0,0,0.7); color: white; width: 100px; height: 50px; border-radius: 10px; position: fixed; left: 0; bottom: 0;
   font-size: 10px; display:flex; justify-content: center; align-items: center;
   animation-name: fromLeft; animation-iteration-count: 1; animation-timing-function: ease-in; animation-duration: 3s;">
-    <button type="button" name="button" style='height: 40px; border-radius: 10px; color: green; font-weight: bold; background-color: white;'>Submit order</button>
+    {{#if isUserTurn currentUser._id}}
+      <button id='submitOrder' type="button" name="button" style='height: 40px; border-radius: 10px; color: green; font-weight: bold; background-color: white;'>Submit order</button>
+    {{ else }}
+      <span style='margin: 10px;'>
+        wait for player {{ currentPlayer 'abc'}}...
+      </span>
+    {{/if}}
   </div>
 </template>
 
@@ -254,27 +257,27 @@
 
   <span style="margin-left: 10px; display: flex; flex-flow: row wrap; ">
     <span style='width: 100px;'> Account Snapshot </span>
-    <span style='width: 100px;'> Player fastrock </span>
+    <span style='width: 100px;'> Player {{seatData 'userName'}} </span>
   </span>
   <span style='margin-left: 20px; display: flex; flex-flow: row wrap; justify-content: center;'>
     <span style='width: 200px; display: flex; justify-content: space-around;'>
-      <span style=' width: 100px; background-color: rbga(256,256,0,0.5);'> Cash: $10000 </span>
-      <span style=' width: 100px; background-color: rbga(256,256,0,0.5);'> # of stock: 100 </span>
+      <span style=' width: 100px; background-color: rbga(256,256,0,0.5);'> Cash: ${{seatData 'cash'}} </span>
+      <span style=' width: 100px; background-color: rbga(256,256,0,0.5);'> # of stocks owned: {{seatData 'stockOwned'}} </span>
     </span>
     <span style='text-align: center; font-size: 10px; width: 100px; display: flex; justify-content: space-around;'>
       <span style='color: white;'>APPL</span>
-      <span style='color: orange;'>$98</span>
+      <span style='color: orange;'>${{bid}}</span>
       <span style='color: #77D; font-size: 10px; font-weight: bold;'>/</span>
-      <span style='color: orange;'>$102</span>
+      <span style='color: orange;'>${{offer}}</span>
     </span>
   </span>
 
   <span style="margin-right: 10px; line-height: 1.8;  display: flex; flex-flow: row wrap; ">
-    <div> Total value: $12541 </div>
-    <div> Relative gain: 0% </div>
+    <div> Total value: ${{nav}} </div>
+    <div> Relative gain: {{gain}}% </div>
   </span>
 
-  <button id='startGame' type="button" name="button" style=' border-radius: 10px; color: red; font-weight: bold; background-color: white;'>Quit</button>
+  <button id='quitGame' type="button" name="button" style=' border-radius: 10px; color: red; font-weight: bold; background-color: white;'>Quit</button>
   </div>
 
 </template>
