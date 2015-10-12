@@ -66,7 +66,8 @@ if (Meteor.isClient) {
     'click #sellUp': function() {utils.modifyQuantity(Meteor.userId(),  'sell', 'up', cb)},
     'click #sellDown': function() {utils.modifyQuantity(Meteor.userId(),  'sell', 'down', cb)},
     'click #submitOrder': function() {utils.submitOrder(Meteor.userId(),  'sell', 'down', cb)},
-    'click #quitGame': function() {Meteor.logout()}
+    'click #quitGame': function() {Meteor.logout()},
+    'click #resetGame': function() {utils.resetGame()}
   });
 
   Template.game.rendered = function () {
